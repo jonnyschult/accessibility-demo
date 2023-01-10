@@ -16,7 +16,7 @@ const TestModal = ({visible, handleClose}: Props) => {
       handleClose={handleClose}
       accessibilityAlertReason="You pressed the test modal button">
       <Layout>
-        <Title accessibilityRole="header">Hello!</Title>
+        <Header accessibilityRole="header">Hello!</Header>
         <Copy>Hopefully you heard an announcement that the modal is open!</Copy>
         <CustomButton
           onPress={handleClose}
@@ -41,10 +41,11 @@ const Layout = styled.View({
   alignItems: 'center',
 });
 
-const Title = styled.Text({
+const Header = styled.Text({
   fontSize: 40,
   marginBottom: 20,
   color: 'black',
+  fontWeight: '600',
 });
 
 const Copy = styled.Text(() => ({

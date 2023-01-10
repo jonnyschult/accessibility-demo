@@ -5,15 +5,25 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from './RootNavigator';
 import {Linking} from 'react-native';
 import TestModal from './TestModal';
+import ToolTip from './shared/reusableComponents/ToolTip';
+import {tooltip} from './static';
 
 interface Props
   extends NativeStackScreenProps<RootStackParams, 'AccessibilityMenu'> {}
 
 const AccessibilityMenu = ({navigation}: Props) => {
   const [showModal, setShowModal] = useState(false);
+  const [showTooltip, setShowToolTip] = useState(false);
   return (
     <Layout>
       <TestModal visible={showModal} handleClose={() => setShowModal(false)} />
+      <ToolTip
+        icon={tooltip}
+        text={
+          "This absolutely positioned element can just be read, since there's nothing to select."
+        }
+        onPress={() => setShowToolTip(!showTooltip)}
+      />
       <CustomButton onPress={() => navigation.navigate('Form')}>
         Form
       </CustomButton>

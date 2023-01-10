@@ -1,9 +1,10 @@
 import React, {useEffect, useRef} from 'react';
-import {AccessibilityInfo, Animated, StyleSheet} from 'react-native';
+import {Animated, StyleSheet} from 'react-native';
 import styled from '@emotion/native';
 import {alert} from '../../static';
 import {IS_IOS} from '../constants';
 import Icon from './Icon';
+import {useAccessibilityContext} from '../accessibilityContext';
 
 interface Props {
   isVisible: boolean;
@@ -22,6 +23,7 @@ const FormErrorMessage = ({
   accessibilityElementsHidden,
   importantForAccessibility,
 }: Props) => {
+  const {announce} = useAccessibilityContext();
   const growTranslation = useRef(new Animated.Value(0)).current;
   const {grow} = styles({
     growTranslation,
@@ -39,15 +41,9 @@ const FormErrorMessage = ({
 
   useEffect(() => {
     if (IS_IOS && isVisible) {
-      //@ts-ignore for some unknown reason, this method isn't recognized.
-      AccessibilityInfo.announceForAccessibilityWithOptions(
-        'Error alert: ' + errorMessage,
-        {
-          queue: true,
-        },
-      );
+      announce({message: 'Error alert: ' + errorMessage, queue: true});
     }
-  }, [isVisible, errorMessage]);
+  }, [isVisible, errorMessage, announce]);
 
   return (
     <Layout

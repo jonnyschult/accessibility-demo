@@ -2,15 +2,28 @@ import React, {Dispatch, RefObject, SetStateAction, useEffect} from 'react';
 import {createContext, ReactNode, useContext, useState} from 'react';
 import {AccessibilityInfo, findNodeHandle} from 'react-native';
 
+interface AnnounceOptions {
+  message: string;
+  queue?: boolean;
+  delay?: number;
+}
+
+interface SetFocusOptions {
+  ref: RefObject<any>;
+  delay?: number;
+}
+
 export interface AccessibilityContent {
   screenReaderIsEnabled: boolean;
-  setFocus: (ref: RefObject<any>, delay?: number) => void;
+  setFocus: (options: SetFocusOptions) => void;
+  announce: (options: AnnounceOptions) => void;
   setScreenReaderIsEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
 export const AccessibilityContext = createContext<AccessibilityContent>({
   screenReaderIsEnabled: false,
-  setFocus: (_ref, _delay) => {},
+  setFocus: _options => {},
+  announce: _options => {},
   setScreenReaderIsEnabled: () => {},
 });
 
@@ -24,12 +37,33 @@ export const AccessibilityProvider = ({children}: {children: ReactNode}) => {
   };
 
   // Create a setFocus function so you can simplify focus setting throughout the app
-  const setFocus = (reactNode: RefObject<any>, delay: number = 0) => {
-    const reactTag = findNodeHandle(reactNode.current);
+  const setFocus = ({ref, delay}: SetFocusOptions) => {
+    const reactTag = findNodeHandle(ref.current);
     if (reactTag) {
-      setTimeout(() => {
+      if (delay) {
+        setTimeout(() => {
+          AccessibilityInfo.setAccessibilityFocus(reactTag);
+        }, delay);
+      } else {
         AccessibilityInfo.setAccessibilityFocus(reactTag);
+      }
+    }
+  };
+
+  const announce = ({message, queue = false, delay}: AnnounceOptions) => {
+    console.log(message);
+    if (delay) {
+      setTimeout(() => {
+        // @ts-ignore for some unknown reason, this method isn't recognized.
+        AccessibilityInfo.announceForAccessibilityWithOptions(message, {
+          queue,
+        });
       }, delay);
+    } else {
+      // @ts-ignore for some unknown reason, this method isn't recognized.
+      AccessibilityInfo.announceForAccessibilityWithOptions(message, {
+        queue,
+      });
     }
   };
 
@@ -53,6 +87,7 @@ export const AccessibilityProvider = ({children}: {children: ReactNode}) => {
       value={{
         screenReaderIsEnabled,
         setFocus,
+        announce,
         setScreenReaderIsEnabled,
       }}>
       {children}

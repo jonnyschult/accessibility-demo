@@ -59,11 +59,11 @@ const DropDownInput = ({
     // Auto focus on the first menu item
     // Android requires a bit of time to properly focus
     if (!isOpen && firstOptionRef.current) {
-      setFocus(firstOptionRef, IS_IOS ? 0 : 500);
+      setFocus({ref: firstOptionRef, delay: IS_IOS ? 0 : 500});
     }
     // Auto focus on the pressable after selection
     if (isOpen && openMenuRef.current) {
-      setFocus(openMenuRef, 400);
+      setFocus({ref: openMenuRef, delay: 400});
     }
 
     if (layoutRef.current && scrollEnabled) {

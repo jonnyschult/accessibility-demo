@@ -8,6 +8,7 @@ import SuccessModal from './SuccessModal';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from '../RootNavigator';
 import {useAccessibilityContext} from '../shared/accessibilityContext';
+import {Linking} from 'react-native';
 
 interface FormErrors {
   series: string;
@@ -18,7 +19,7 @@ interface FormErrors {
 interface Props extends NativeStackScreenProps<RootStackParams, 'Form'> {}
 
 const Form = ({navigation}: Props) => {
-  const {setFocus} = useAccessibilityContext();
+  const {setFocus, screenReaderIsEnabled} = useAccessibilityContext();
   const headerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -74,7 +75,7 @@ const Form = ({navigation}: Props) => {
 
   useEffect(() => {
     if (headerRef) {
-      setFocus(headerRef, 500);
+      setFocus({ref: headerRef, delay: 500});
     }
   }, [headerRef, setFocus]);
 
@@ -143,6 +144,24 @@ const Form = ({navigation}: Props) => {
           SUBMIT
         </CustomButton>
       </FormContainer>
+      <Copy
+        accessibilityRole="link"
+        onPress={
+          screenReaderIsEnabled
+            ? () => {
+                Linking.openURL('https://www.imdb.com/list/ls023545027/');
+              }
+            : undefined
+        }>
+        Want a list of all the mysteries?{'\n'} Checkout{' '}
+        <Link
+          onPress={() =>
+            Linking.openURL('https://www.imdb.com/list/ls023545027/')
+          }>
+          IMDB's
+        </Link>{' '}
+        ranked list
+      </Copy>
     </Layout>
   );
 };
@@ -151,10 +170,13 @@ export default Form;
 
 const contentContainerStyle = css({
   alignItems: 'center',
+  justifyContent: 'center',
+  paddingTop: '30%',
 });
 
 const Layout = styled.ScrollView({
   flex: 1,
+  backgroundColor: 'white',
 });
 
 const FormContainer = styled.View({
@@ -164,8 +186,20 @@ const FormContainer = styled.View({
 });
 
 const FormHeader = styled.Text({
-  marginTop: 30,
   marginBottom: 25,
   fontSize: 20,
   color: 'black',
+  fontWeight: '600',
+});
+
+const Copy = styled.Text({
+  color: 'black',
+  fontSize: 16,
+  textAlign: 'center',
+});
+
+const Link = styled.Text({
+  color: 'black',
+  textDecorationLine: 'underline',
+  fontWeight: 'bold',
 });

@@ -8,12 +8,12 @@ import {
   StyleSheet,
   TextInputFocusEventData,
   NativeSyntheticEvent,
-  AccessibilityInfo,
 } from 'react-native';
 import styled from '@emotion/native';
 import {showPassword, hidePassword, alert} from '../../static';
 import Icon from './Icon';
 import {IS_IOS} from '../constants';
+import {useAccessibilityContext} from '../accessibilityContext';
 
 type MyTextInputProps = TextInputProps & {
   marginBottom?: number;
@@ -61,6 +61,7 @@ const Input = ({
   onFocus,
   ...props
 }: MyTextInputProps) => {
+  const {announce} = useAccessibilityContext();
   const [showActiveLabel, setShowActiveLabel] = useState(Boolean(value));
   const [passwordIsRevealed, setPasswordIsRevealed] = useState(false);
   const [extraPadding, setExtraPadding] = useState(false);
@@ -110,15 +111,9 @@ const Input = ({
       useNativeDriver: false,
     }).start();
     if (IS_IOS && error) {
-      //@ts-ignore for some unknown reason, this method isn't recognized.
-      AccessibilityInfo.announceForAccessibilityWithOptions(
-        'Error alert: ' + errorMessage,
-        {
-          queue: true,
-        },
-      );
+      announce({message: 'Error alert: ' + errorMessage, queue: true});
     }
-  }, [error, errorTranslation, errorMessage]);
+  }, [error, errorTranslation, errorMessage, announce]);
 
   return (
     <Layout
