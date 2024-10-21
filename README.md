@@ -33,7 +33,7 @@ The accompanying [blog](https://www.yeti.co/blog/accessibility-first-in-react-na
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/react-native-accessibility-demo.git
+git clone git@github.com:jonnyschult/accessibility-demo.git
 cd react-native-accessibility-demo
 ```
 
@@ -63,8 +63,8 @@ npx react-native run-android
 - AccessibilityProvider: Manages accessibility state and provides utility functions for announcing messages and setting focus.
 - Reusable Components: Custom button, modal, tooltip, etc., with accessibility props included.
 - Screens:
-- - **AccessibilityMenu**: Main menu showcasing various accessibility features.
-- - **Form**: Demonstrates handling of form validation and error messages with accessibility in mind.
+  - **AccessibilityMenu**: Main menu showcasing various accessibility features.
+  - **Form**: Demonstrates handling of form validation and error messages with accessibility in mind.
 - Utils: Helper functions and constants, including static assets.
 
 ## Key Concepts
@@ -87,8 +87,7 @@ export const AccessibilityContext = createContext<AccessibilityContent>({
 Uses `AccessibilityInfo` to announce changes, ensuring that screen reader users are aware of dynamic content.
 
 ```tsx
-Copy code
-const announce = ({ message, queue = false, delay }: AnnounceOptions) => {
+const announce = ({message, queue = false, delay}: AnnounceOptions) => {
   if (delay) {
     setTimeout(() => {
       AccessibilityInfo.announceForAccessibility(message);
